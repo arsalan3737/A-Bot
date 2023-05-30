@@ -27,11 +27,16 @@ module.exports = {
             .then(data =>{
                 const KD = data.data.segments[0].stats.kd.displayValue;
                 const Name = data.data.platformInfo.platformUserHandle;
-                const image = 
+                const image = data.data.platformInfo.avatarUrl;
+                const steamURL = data.data.platformInfo.platformUserId
                 const embed = new EmbedBuilder()
-                    .setColor(0x0099FF)
+                    .setColor(0xff0000)
                     .setTitle(`${Name}'s Stats`)
-                    .set
+                    .setURL(`https://steamcommunity.com/id/${steamID}`)
+                    .setThumbnail(`${image}`)
+                    .addFields(
+                        {name: `K/D`, value: `${KD}`},
+                    )
                 interaction.reply({ embeds: [embed] });
             })
             .catch(error => {
