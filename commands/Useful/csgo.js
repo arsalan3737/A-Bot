@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const balls = `new`
 module.exports = {
     data: new SlashCommandBuilder()
         .setName(`cs-stats`)
