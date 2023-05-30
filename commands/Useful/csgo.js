@@ -27,7 +27,12 @@ module.exports = {
             .then(data =>{
                 const KD = data.data.segments[0].stats.kd.displayValue;
                 const Name = data.data.platformInfo.platformUserHandle;
-                interaction.reply(`${Name} has a CS:GO kd of ${KD}`);
+                const image = 
+                const embed = new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle(`${Name}'s Stats`)
+                    .set
+                interaction.reply({ embeds: [embed] });
             })
             .catch(error => {
                 console.error('Error:', error);
