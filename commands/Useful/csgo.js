@@ -28,15 +28,19 @@ module.exports = {
                 const KD = data.data.segments[0].stats.kd.displayValue;
                 const Name = data.data.platformInfo.platformUserHandle;
                 const image = data.data.platformInfo.avatarUrl;
-                const steamURL = data.data.platformInfo.platformUserId
+                const steamURL = data.data.platformInfo.platformUserId;
+                const hsPct = data.data.segments[0].stats.headshotPct.displayValue
                 const embed = new EmbedBuilder()
                     .setColor(0xff0000)
                     .setTitle(`${Name}'s Stats`)
                     .setURL(`https://steamcommunity.com/id/${steamID}`)
                     .setThumbnail(`${image}`)
                     .addFields(
-                        {name: `K/D`, value: `${KD}`},
+                        {name: `K/D`, value: `${KD}`, inline: true},
+                        {name: `Headshot %`, value: `${hsPct}`, inline: true},
                     )
+                    .setTimestamp()
+                    
                 interaction.reply({ embeds: [embed] });
             })
             .catch(error => {
