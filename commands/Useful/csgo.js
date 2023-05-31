@@ -20,7 +20,7 @@ module.exports = {
         })
             .then(res => {
                 if(!res.ok){
-                    interaction.reply(`Invalid Steam ID`);
+                    interaction.reply({content: `Invalid Steam ID`, ephemeral: true });
                 }
                 return res.json();
             })
@@ -29,15 +29,22 @@ module.exports = {
                 const Name = data.data.platformInfo.platformUserHandle;
                 const image = data.data.platformInfo.avatarUrl;
                 const steamURL = data.data.platformInfo.platformUserId;
-                const hsPct = data.data.segments[0].stats.headshotPct.displayValue
+                const hsPct = data.data.segments[0].stats.headshotPct.displayValue;
+                const mPlayed = data.data.segments[0].stats.matchesPlayed.displayValue;
+                const mWon = data.data.segments[0].stats.wins.displayValue;
+                const wPct = data.data.segments[0].stats.wlPercentage.displayValue;
                 const embed = new EmbedBuilder()
                     .setColor(0xff0000)
                     .setTitle(`${Name}'s Stats`)
                     .setURL(`https://steamcommunity.com/id/${steamID}`)
-                    .setThumbnail(`${image}`)
+                    .setThumbnail(image)
                     .addFields(
-                        {name: `K/D`, value: `${KD}`, inline: true},
-                        {name: `Headshot %`, value: `${hsPct}`, inline: true},
+                        { name: `K/D`, value: `${KD}`, inline: true },
+                        { name: `Headshot %`, value: `${hsPct}`, inline: true },
+                        { name: '', value: '', inline: false },
+                        { name: `Games Played`, value: `${mPlayed}`, inline: true },
+                        { name: `Games Won`, value: `${mWon}`, inline: true },
+                        { name: `Win %`, value:`${wPct}`, inline: true },
                     )
                     .setTimestamp()
                     
