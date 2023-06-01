@@ -41,7 +41,7 @@ module.exports = {
                     .addFields(
                         { name: `K/D`, value: `${KD}`, inline: true },
                         { name: `Headshot %`, value: `${hsPct}`, inline: true },
-                        { name: '', value: '', inline: false },
+                        { name: '\n', value: '\n', inline: false },
                         { name: `Games Played`, value: `${mPlayed}`, inline: true },
                         { name: `Games Won`, value: `${mWon}`, inline: true },
                         { name: `Win %`, value:`${wPct}`, inline: true },
