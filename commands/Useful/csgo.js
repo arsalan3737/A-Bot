@@ -5,6 +5,7 @@ const {
   ButtonStyle,
   ActionRowBuilder,
 } = require("discord.js");
+const { TRNApiKey } = require("../../config.json");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName(`cs-stats`)
@@ -12,7 +13,7 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName(`steam-id`)
-        .setDescription("Enter Valid Steam ID")
+        .setDescription(`Enter Valid Steam ID`)
         .setRequired(true)
     ),
   async execute(interaction) {
@@ -22,7 +23,7 @@ module.exports = {
       {
         method: "GET",
         headers: {
-          "TRN-Api-Key": "5f235d64-ea21-4b61-8768-4cebde1f543e",
+          "TRN-Api-Key": TRNApiKey,
           Accept: `application/json`,
           "Accept-Encoding": `gzip`,
         },

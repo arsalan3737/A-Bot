@@ -17,11 +17,13 @@ module.exports = {
       interaction.options.getUser("user") == undefined
         ? await interaction.user.fetch(true)
         : await interaction.options.getUser("user").fetch(true);
+
     const embed = new EmbedBuilder()
       .setColor(0x0099ff)
       .setTitle(user.username + `'s banner`)
       .setImage(user.bannerURL({ size: 2048 }))
       .setTimestamp();
+
     user.bannerURL() == null
       ? await interaction.reply({
           content: `User does not have a banner`,
@@ -29,6 +31,6 @@ module.exports = {
         })
       : await interaction.reply({ embeds: [embed] });
 
-    console.log(user.bannerURL());
+    console.log(user.bannerURL({ size: 2048 }));
   },
 };
