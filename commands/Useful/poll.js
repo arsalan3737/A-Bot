@@ -5,6 +5,8 @@ const {
   ButtonStyle,
   ActionRowBuilder,
   GuildMember,
+  InteractionCollector,
+  ComponentType,
 } = require("discord.js");
 
 module.exports = {
@@ -16,84 +18,74 @@ module.exports = {
         .setName(`question`)
         .setDescription(`Question For the Poll`)
         .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName(`option1`)
+        .setDescription(`Used to change the first option`)
+        .setRequired(false)
+    )
+    .addStringOption((option) =>
+      option
+        .setName(`option2`)
+        .setDescription(`Used to change the second option`)
+        .setRequired(false)
     ),
-  async execute(interaction, yes, no) {
-    yes = 0;
-    no = 0;
+  async execute(interaction) {
+    let option1 = interaction.options.getString("option1")
+      ? interaction.options.getString("option1")
+      : `yes`;
+    let option2 = interaction.options.getString("option2")
+      ? interaction.options.getString("option2")
+      : `No`;
+    let yes = 0;
+    let no = 0;
+    const votedUser = new Set();
     const question = interaction.options.getString("question");
     const yButton = new ButtonBuilder()
-      .setStyle(ButtonStyle.Primary)
+      .setStyle(ButtonStyle.Success)
       .setCustomId(`yes`)
-      .setLabel(`Yes`);
+      .setLabel(option1);
     const nButton = new ButtonBuilder()
-      .setStyle(ButtonStyle.Primary)
+      .setStyle(ButtonStyle.Danger)
       .setCustomId(`no`)
-      .setLabel(`No`);
+      .setLabel(option2);
     const but = new ActionRowBuilder().addComponents(yButton, nButton);
     const embed = new EmbedBuilder()
       .setTitle(question)
       .addFields(
-        { name: `Yes`, value: `${yes}`, inline: true },
-        { name: `No`, value: `${no}`, inline: true }
+        { name: option1, value: `${yes}`, inline: true },
+        { name: option2, value: `${no}`, inline: true }
       );
     const response = await interaction.reply({
       embeds: [embed],
       components: [but],
     });
-    this.run(interaction, yes, no, question, response);
-  },
-  async run(interaction, yes, no, question, response) {
-    const yButton = new ButtonBuilder()
-      .setStyle(ButtonStyle.Primary)
-      .setCustomId(`yes`)
-      .setLabel(`Yes`);
-    const nButton = new ButtonBuilder()
-      .setStyle(ButtonStyle.Primary)
-      .setCustomId(`no`)
-      .setLabel(`No`);
-    const but = new ActionRowBuilder().addComponents(yButton, nButton);
-    const yesNo = await response
-      .awaitMessageComponent({ time: 60000 })
-      .catch(() => null);
-    if (yesNo == null) {
-      const newEmbed = new EmbedBuilder()
-        .setTitle(`The result of "${question}"`)
-        .addFields(
-          { name: `Yes`, value: `${yes}`, inline: true },
-          { name: `No`, value: `${no}`, inline: true }
-        );
-      interaction.editReply({
-        embeds: [newEmbed],
-        components: [],
-      });
-      return;
-    }
-    if (yesNo.customId == "yes") {
-      yes++;
-      const newEmbed = new EmbedBuilder()
+    const collector = response.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+    });
+
+    collector.on(`collect`, async (interaction) => {
+      if (votedUser.has(interaction.user.id)) {
+        interaction.reply({
+          content: `You have already voted`,
+          ephemeral: true,
+        });
+        return;
+      }
+      votedUser.add(interaction.user.id);
+      if (interaction.customId === `yes`) yes++;
+      if (interaction.customId === `no`) no++;
+      let embed2 = new EmbedBuilder()
         .setTitle(question)
         .addFields(
-          { name: `Yes`, value: `${yes}`, inline: true },
-          { name: `No`, value: `${no}`, inline: true }
+          { name: option1, value: `${yes}`, inline: true },
+          { name: option2, value: `${no}`, inline: true }
         );
-      await yesNo.update({
-        embeds: [newEmbed],
+      const response = await interaction.update({
+        embeds: [embed2],
         components: [but],
       });
-      this.run(interaction, yes, no, question, response);
-    } else {
-      no++;
-      const newEmbed = new EmbedBuilder()
-        .setTitle(question)
-        .addFields(
-          { name: `Yes`, value: `${yes}`, inline: true },
-          { name: `No`, value: `${no}`, inline: true }
-        );
-      await yesNo.update({
-        embeds: [newEmbed],
-        components: [but],
-      });
-      this.run(interaction, yes, no, question, response);
-    }
+    });
   },
 };
