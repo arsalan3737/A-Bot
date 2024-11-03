@@ -2,6 +2,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("./config.json");
+const { uri } = require("./config.json");
+const { mongoose } = require("mongoose");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -55,5 +57,25 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
   }
 });
+
+mongoose
+  .connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to Mongoose");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+// const clientmdb = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   },
+// });
 
 client.login(token);
