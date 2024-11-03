@@ -79,7 +79,6 @@ module.exports = {
         .setStyle(ButtonStyle.Success)
         .setCustomId(`thirdOpt`)
         .setLabel(option3);
-      console.log(option3);
       but.addComponents(thirdButton);
       embed.addFields({ name: option3, value: `${o3}`, inline: true });
     }
@@ -88,7 +87,6 @@ module.exports = {
         .setStyle(ButtonStyle.Success)
         .setCustomId(`fourthOpt`)
         .setLabel(option4);
-      console.log(option4);
       but.addComponents(fourthButton);
       embed.addFields({ name: option4, value: `${o4}`, inline: true });
     }
